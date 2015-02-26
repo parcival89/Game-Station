@@ -7,6 +7,8 @@ import java.util.Objects;
  * @author SanderP
  * @version 0.0.1
  */
+
+//TODO: add logging (slf4j)
 public class GameController {
     private Game game;
     
@@ -21,8 +23,12 @@ public class GameController {
     public Game getGame() {
         return game;
     }
-    
-    public void setGame(Game game){
+
+    /**
+        Please use the loadGame function when changing the Game
+     **/
+    @Deprecated
+    protected void setGame(Game game){
         this.game = game;
     }
     

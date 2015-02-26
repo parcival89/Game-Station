@@ -3,6 +3,8 @@ package core.game;
 
 import java.util.Objects;
 
+import static core.game.Status.NEW;
+
 /**
  *
  * @author SanderP
@@ -10,15 +12,21 @@ import java.util.Objects;
  */
 public abstract class Game {
     protected String name;
+    protected Status status;
     
     public Game(String name){
         this.name = name;
+        this.status = NEW;
     }
     
     public abstract void start();
     public abstract void stop();
     public abstract void reset();
-    
+
+    public String getName() {
+        return name;
+    }
+
     @Override
     public abstract String toString();
     @Override
@@ -26,4 +34,8 @@ public abstract class Game {
 
     @Override
     public abstract int hashCode();
+
+    public Status getStatus() {
+        return status;
+    }
 }

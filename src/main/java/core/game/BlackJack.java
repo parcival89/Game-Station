@@ -7,6 +7,7 @@ package core.game;
 
 import core.code.CardType;
 import core.model.Deck;
+import core.speler.BlackJackSpeler;
 
 import java.util.Arrays;
 
@@ -14,23 +15,48 @@ import java.util.Arrays;
  * @author SanderP
  */
 public class BlackJack extends CardGame {
-    private String player;
-    private String house;
+    private BlackJackSpeler speler;
+    private BlackJackSpeler house;
 
     private int scorePlayer;
     private int scoreHouse;
 
-    public BlackJack(String player) {
+    public BlackJack(String speler) {
         super("Blackjack", new Deck(Arrays.asList(CardType.values()), 13));
-        this.player = player;
+
+        if(speler == null){
+            throw new IllegalArgumentException("Spelernaam kan niet null zijn");
+        }
+
+        this.speler = new BlackJackSpeler(speler);
+        this.house = new BlackJackSpeler("House");
 
         this.scorePlayer = 0;
         this.scoreHouse = 0;
     }
 
+    public BlackJackSpeler getSpeler() {
+        return speler;
+    }
+
+    public BlackJackSpeler getHouse() {
+        return house;
+    }
+
+    public int getScorePlayer() {
+        return scorePlayer;
+    }
+
+    public int getScoreHouse() {
+        return scoreHouse;
+    }
+
     @Override
     public void start() {
+        deck.trekKaarten(2).forEach(kaart -> speler.voegKaartToeAanHand(kaart));
+        deck.trekKaarten(2).forEach(kaart -> house.voegKaartToeAanHand(kaart));
 
+        status = Status.RUNNING;
     }
 
     @Override
@@ -40,7 +66,10 @@ public class BlackJack extends CardGame {
 
     @Override
     public void reset() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        speler.maakHandLeeg();
+        house.maakHandLeeg();
+
+        deck.resetDeck();
     }
 
     @Override
@@ -52,6 +81,7 @@ public class BlackJack extends CardGame {
     public boolean equals(Object o) {
         return false;
     }
+
 
     @Override
     public int hashCode() {

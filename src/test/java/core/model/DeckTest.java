@@ -4,6 +4,7 @@ import core.code.CardType;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static core.code.CardType.HARTEN;
 import static core.model.DeckBuilder.*;
@@ -75,15 +76,64 @@ public class DeckTest {
 
     @Test
     public void testContainsCardReturnsTrueWhenCardInDeck(){
-        Deck deck = DeckBuilder.aNormalCardDeck();
+        Deck deck = aNormalCardDeck();
 
         assertThat(deck.containsCard(new Card(HARTEN, 1))).isTrue();
     }
 
     @Test
     public void testContainsCardReturnsFalseWhenCardIsNotInDeck(){
-        Deck deck = DeckBuilder.aNormalCardDeck();
+        Deck deck = aNormalCardDeck();
 
         assertThat(deck.containsCard(new Card(HARTEN, 145))).isFalse();
+    }
+
+    @Test
+    public void testTrekKaartenGeeftLijstKaartenTerugMetMeegegevenSize(){
+        Deck deck = aNormalCardDeck();
+
+        List<Card> kaarten = deck.trekKaarten(7);
+
+        assertThat(kaarten).hasSize(7);
+    }
+
+    @Test
+    public void testKaartenGeeftLijstZonderDubbelsTerug(){
+        Deck deck = aNormalCardDeck();
+
+        List<Card> kaarten = deck.trekKaarten(7);
+
+        assertThat(bevatDubbels(kaarten)).isFalse();
+    }
+
+    @Test
+    public void resetDeckZorgtVoorEenVolledigAangevuldDeck(){
+        Deck deck = aNormalCardDeck();
+
+        deck.trekKaarten(27);
+        deck.resetDeck();
+
+        assertThat(deck.cardsInDeck()).isEqualTo(52);
+    }
+
+    @Test
+    public void resetDeckMaaktBevatOpnieuwAlleKaartenVanHetInitieleDeck(){
+        Deck deck = aNormalCardDeck();
+
+        List<Card> initialDeck = deck.trekKaarten(deck.cardsInDeck());
+
+        deck.resetDeck();
+
+        assertThat(deck.containsCards(initialDeck)).isTrue();
+    }
+
+    private boolean bevatDubbels(List<Card> kaarten) {
+        for(Card card : kaarten){
+            if(kaarten.indexOf(card) != kaarten.lastIndexOf(card)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

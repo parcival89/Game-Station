@@ -20,11 +20,11 @@ public class Deck {
     }
 
     private void initialize(List<CardType> types, Integer cardsPerType) {
-        if(types == null){
+        if (types == null) {
             throw new IllegalArgumentException("Meegegeven parameter types is null");
         }
 
-        if(cardsPerType == null){
+        if (cardsPerType == null) {
             throw new IllegalArgumentException("Meegegeven paramater cardsPerType is null");
         }
 
@@ -51,7 +51,17 @@ public class Deck {
     }
 
     public Card drawCard() {
-        List<Card> typeList = cards.get(CardType.getRandomType());
+        List<Card> typeList = null;
+        int counter = 0;
+        do {
+            typeList = cards.get(CardType.getRandomType());
+            counter++;
+        } while (typeList.size() == 0 && counter < cards.size());
+
+        if (counter >= cards.size() && typeList.size() == 00) {
+            throw new IllegalArgumentException("geen kaarten meer");
+        }
+
         int rand = new Random().nextInt(typeList.size());
 
         return typeList.remove(rand);
@@ -61,11 +71,28 @@ public class Deck {
         return cards.keySet().stream().mapToInt(type -> cards.get(type).size()).sum();
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return cardsInDeck() >= 0;
     }
 
     public boolean containsCard(Card card) {
         return this.cards.keySet().stream().anyMatch(type -> cards.get(type).stream().anyMatch(selectedCard -> card.equals(selectedCard)));
+    }
+
+    public List<Card> trekKaarten(int aantal) {
+        List<Card> toDraw = new ArrayList<>();
+        for (int i = 0; i < aantal; i++) {
+            toDraw.add(drawCard());
+        }
+        return toDraw;
+    }
+
+    public boolean containsCards(List<Card> cardList) {
+        for (Card card : cardList) {
+            if (!cards.containsKey(card.getType()) || !cards.get(card.getType()).contains(card)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
